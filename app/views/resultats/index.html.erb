@@ -114,51 +114,32 @@
         <th colspan="3">Actions</th>
       </tr>
     </thead>
-
     <tbody>
-      <% @resultatsFiltres.each do |resultat| %>
-            <tr>
-            <%#  <td> %>
-              
-               <% eventID = resultat.event_id %>
-                <% if eventID.nil? %>
-                <% else %>
-                  <% "#{Event.find(eventID).numero}" " | " "#{Event.find(eventID).circuit_id}" " | div " "#{Event.find(eventID).division}" %>
-                <% end %>
-
-               <%#  </td> %>
-
-              <%#  <td> %>
-                <% eventId = resultat.event_id %>
-                <% if eventID.nil? %>
-                 <% else %>
-                  <% circuitId = Event.find(eventId).circuit_id %> 
-                  <% Circuit.find(circuitId).pays %>
-                  <% image_tag(Circuit.find(circuitId).drapeau, style: "width: 50px; display: block", class: "img-fluid rounded") %> 
-                <% end %>
-               
-             <%#  </td> %>
-
-              <td> 
-                  <div class="contenant">
-                    <% equipeId = Pilote.find(resultat.pilote_id).ecurie %>  
-                    <%= image_tag Equipe.find(equipeId).logo, style: "width: 300px; display: block", class: "img-fluid rounded" %>
+      <% @resultatsFiltres.each do |res| %>
+        <tr>
+          <td>  
+            <div class="contenant">
+              <% idPilote = res.pilote_id %> 
+              <% idEcurie = res.ecurie %> 
+              <% nomPilote = Pilote.find(idPilote).nom %> 
+                <%= image_tag Equipe.find(idEcurie).logo, style: "width: 300px; display: block", class: "img-fluid rounded" %>
                       <div class="texte_centrer">
-                        <%= Pilote.find(resultat.pilote_id).nom %>  
+                        <%= nomPilote %>
                       </div>
                   </div>
-                </td> 
 
-                 <td> <%= Equipe.find(equipeId).nom %>    </td>
+          </td> 
+          <td> 
+             <% idEcurie = res.ecurie %> 
+             <% nomEcurie = Equipe.find(idEcurie).nom %> 
+             <%= nomEcurie %>
+          </td>
 
-              <td> <%= resultat.qualification %>  </td>
-              <td> <%= resultat.course %>    </td>
+         <td> <%= res.qualification %>  </td>
+         <td> <%= res.course %>    </td>
 
-                <%#= resultat.ecurie_id %>  
-
-              <td> 
-                <% resultat.dotd %>  
-                <% if resultat.dotd == true %>
+          <td> 
+                <% if res.dotd == true %>
                   <i class="fa-solid fa-circle-check fa-xl" style="color:green"></i>
                 <% else %>
                   <i class="fa-solid fa-circle-xmark fa-xl" style="color:red"></i>
@@ -166,8 +147,7 @@
               </td>
               
               <td> 
-                <% resultat.mt %> 
-                <% if resultat.mt == true %>
+                <% if res.mt == true %>
                   <i class="fa-solid fa-circle-check fa-xl" style="color:green"></i>
                 <% else %>
                   <i class="fa-solid fa-circle-xmark fa-xl" style="color:red"></i>
@@ -175,31 +155,32 @@
               </td>
 
                <%#= points %>
-               <td class="fw-bold fs-xl"> <%= resultat.score.to_i %>    </td>
+               <td class="fw-bold fs-xl"> <%= res.score.to_i %>    </td>
 
                 <%#= actions %>
                 <td width="5%">
-                    <%= link_to '', resultat, class:"fa-solid fa-eye btn btn-primary" %> 
+                    <%= link_to '', res, class:"fa-solid fa-eye btn btn-primary" %> 
                 </td>
                 <td width="5%">
-                  <%= button_to '', resultat, class:"fa-solid fa-trash-can btn btn-danger", method: :delete, :onclick => "return confirm('Sûr ?')" %>
+                  <%= button_to '', res, class:"fa-solid fa-trash-can btn btn-danger", method: :delete, :onclick => "return confirm('Sûr ?')" %>
                 </td> 
                 <td width="5%">
-                    <%= link_to "", edit_resultat_path(resultat), class:"fa-regular fa-pen-to-square btn btn-warning" %> 
+                    <%= link_to "", edit_resultat_path(res), class:"fa-regular fa-pen-to-square btn btn-warning" %> 
                 </td> 
 
-            </tr>
-      <% end %>
-    </tbody>
+
+        </tr>
+      <% end %> 
+    </tbody>  
+  
   </table>
 
    <br/>  <hr/>
 
   <%# PDF event actif %>
-  <%= link_to "PDF", resultats_path(eventId: @eventId, format: :pdf), class:"btn btn-dark" %>
-
-
  
+  <% numGp = Event.find(@eventId).numero %>
+  <%= link_to "PDF",  resultats_path(saisonId: @saisonId, divisionId: @divisionId, eventId: @eventId, numGp: numGp, format: :pdf), class:"btn btn-dark" %>
 
  <% end %>
 

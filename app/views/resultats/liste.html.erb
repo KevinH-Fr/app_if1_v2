@@ -1,123 +1,106 @@
-<%= wicked_pdf_image_tag asset_url('/images/if1main.png'), style: "width: 200px; display: block", class: "img-fluid rounded" %> 
+<%= wicked_pdf_image_tag asset_url('/images/if1main.png'), style: "width: 150px;", class: "img-fluid rounded", id:"imgLogoIf1" %> 
 
 <h1> Résultats </h1>
 
 <% eventId = @eventId %>
 
-<%#= @eventId %>
+<% Event.find(eventId).date %>
+<% circuitId = Event.find(eventId).circuit_id %> 
+
+
+  <% if Circuit.find(circuitId).drapeau.present? %>
+    <%= image_tag(Circuit.find(circuitId).drapeau, style: "width: 100px; display: block", class: "img-fluid rounded", id:"imgDrapeau") %> 
+  <% end %>
+
 
  <table width="600" style="margin-left:auto;margin-right:auto">
     <thead>
       <tr>
-       
         <th>Date</th>
         <th>Pays</th>
-        <th>Drapeau</th>
-        <th>Carte</th>
         <th>Division</th>
-
       </tr>
     </thead>
 
     <tbody>
-
-  <tr>
-    <td>
-          <%= Event.find(eventId).date %>
-    </td>
-    <td>
-        <% circuitId = Event.find(eventId).circuit_id %> 
-        <%= Circuit.find(circuitId).pays %>
-    </td>
-     <td width="60">
-        <% if Circuit.find(circuitId).drapeau.present? %>
-          <%= image_tag(Circuit.find(circuitId).drapeau, style: "width: 50px; display: block", class: "img-fluid rounded") %> 
-        <% end %>
-    </td>
-      <td width="60">
-        <% if Circuit.find(circuitId).carte.present? %>
-          <%= image_tag(Circuit.find(circuitId).carte, style: "width: 50px; display: block", class: "img-fluid rounded") %>  
-        <% end %>
-    </td>
-    <td>
-        <% divisionId = Event.find(eventId).division_id %> 
-        <%= Division.find(divisionId).numero %>
-    </td>
-   
-  </tr>
+      <tr>
+        <td class="val_entete">
+            <%= Event.find(eventId).date %>
+        </td>
+        <td class="val_entete">
+          <% circuitId = Event.find(eventId).circuit_id %> 
+          <%= Circuit.find(circuitId).pays %>
+        </td>
+         <td class="val_entete">
+          <% divisionId = Event.find(eventId).division_id %> 
+          <%= Division.find(divisionId).numero %>
+        </td>
+      
+      </tr>
   </tbody>
 </table>
 
 
-<% if user_signed_in? %> 
-
   <hr/> <br/> <br/>
 
-  <%# tableau datas %>
+  <%#= tableau data classement %>
 
- <table width="200" style="margin-left:auto;margin-right:auto">
-    <thead>
-      <tr>
-       
-        <th>Position</th>
-        <th>Pilote</th>
-        <th>Points</th>
+ <% if (@eventId).blank? %>
+ <% else %>
+  <% eventNum = Event.find(@eventId).numero %>
+    
+      <table style="margin-left:auto;margin-right:auto">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Pilote</th>
+            <th>Points</th>
+          </tr>
+        </thead>
 
-      </tr>
-    </thead>
+           <tbody>
+     <% @resultatsFiltres.each_with_index do | res| %>
+     <tr>
+        <td class="cols_pos_score">
+           <strong>  
+              <%= res.course %> 
+            </strong> 
+        </td>
 
-    <tbody>
-      <% @resultats.each do |resultat| %>
-            <tr>
-               <td> 
-                  <%= resultat.course %>    
-               </td>
-
-              <td> 
-                  <div class="contenant">
-                    <% equipeId = Pilote.find(resultat.pilote_id).ecurie %>  
-                    <%= image_tag Equipe.find(equipeId).logo, style: "width: 500px; height: 50px; display: block", class: "img-fluid rounded" %>
+          <td>  
+            <div class="contenant">
+              <% idPilote = res.pilote_id %> 
+              <% idEcurie = res.ecurie %> 
+              <% nomPilote = Pilote.find(idPilote).nom %> 
+                <%= image_tag Equipe.find(idEcurie).logo, style: "width: 400px; display: block", class: "img-fluid rounded" %>
                       <div class="texte_centrer">
-                        <%= Pilote.find(resultat.pilote_id).nom %>  
+                        <%= nomPilote %>
                       </div>
                   </div>
-                </td> 
 
-               <%#= points %>
-               <td class="fw-bold fs-xl"> 
-                  <%= resultat.score.to_i %>    
-               </td>
+          </td> 
+      
+               <td class="cols_pos_score">
+                  <strong>  
+                      <%= res.score.to_i %> 
+                    </strong> 
+                </td>
 
-            </tr>
-      <% end %>
-    </tbody>
+
+        </tr>
+      <% end %> 
+    </tbody>  
+    
   </table>
 
-<br/><br/>
+  <br/>
 
- <table width="200" style="margin-left:auto;margin-right:auto">
-  <tr>
-    <td>
-      <%= wicked_pdf_image_tag asset_url('/images/Discord.png'), style: "width: 50px; display: block", class: "img-fluid rounded" %> 
-    </td>
-    <td>
-      <%= wicked_pdf_image_tag asset_url('/images/logoF12021.png'), style: "width: 50px; display: block", class: "img-fluid rounded" %> 
-    </td>
-    <td>
-      <%= wicked_pdf_image_tag asset_url('/images/twitch.png'), style: "width: 50px; display: block", class: "img-fluid rounded" %> 
-    </td>
-    <td>
-      <%= wicked_pdf_image_tag asset_url('/images/xbox.png'), style: "width: 50px; display: block", class: "img-fluid rounded" %> 
-    </td>
-  </tr>
-</table>
+<%# bas de page depuis partial %>
+<%= render "shared/baspdf" %>
 
-<br/><br/>
+
    PDF generation date:
 <%= Time.zone.now %>
 
-<% else %>
 
-  <h3> Vous n'avez pas les droits...</h3>
-  
 <% end %>

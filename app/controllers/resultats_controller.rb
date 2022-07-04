@@ -14,29 +14,7 @@ class ResultatsController < ApplicationController
     @resultatsFiltres = Resultat.all
     
     @resultat = Resultat.all
-    #@resModel = @resultat.formatted_name2
 
-    #@valeursModel = Resultat.with_mt
-
-    #@resultat.virtual_attribute_name_here = "Some thing"
-
-
-
-
-
-      #eventtempo = params[:eventId]
-     # @eventtempo = eventtempo
-
-     # @resVal2 = Resultat.valeur1
-
-
-      
-    #  resultat_detail = get_resultat_info(@resultats.last)
- 
-   # @resVal2 = Resultat.item_status
-
-
-    
 
     if params[:saisonId]
       @saisonId = params[:saisonId]
@@ -55,8 +33,12 @@ class ResultatsController < ApplicationController
 
       @eventNum = Event.find(@eventId).numero 
 
-      @resultatsFiltres = @resultats.where('event_id = :event_id',
-                   event_id: @eventId)
+    
+        @resultatsFiltres = Resultat.joins(:event).where(
+         'event_id = :event_id',
+          event_id: @eventId)
+        
+         @resultatsFiltres = @resultatsFiltres.order(:course)
 
       @divisionId = Event.find(@eventId).division_id 
 
