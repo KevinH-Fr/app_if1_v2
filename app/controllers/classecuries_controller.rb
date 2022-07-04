@@ -29,8 +29,21 @@ class ClassecuriesController < ApplicationController
         @eventId = params[:eventId]
         @eventNum = Event.find(@eventId).numero 
 
-        @resultatsFiltres = @resultats.where('event_id <= :event_id',
-                    event_id: @eventId)
+        @resultatsFiltres = Resultat.joins(:event).where(
+              'numero <= :numero AND 
+               saison_id = :saison_id AND 
+               division_id = :division_id',  
+               numero: params[:numGp],
+               saison_id: params[:saisonId],
+               division_id: params[:divisionId])
+    
+         @resultatsFiltres = @resultatsFiltres.select(:ecurie, "sum(score) as sum_amount").group(:ecurie).order(
+                "sum(score) desc").sum(:score)
+
+
+
+
+
 
         @divisionId = Event.find(@eventId).division_id 
 

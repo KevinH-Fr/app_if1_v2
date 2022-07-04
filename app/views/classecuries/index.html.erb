@@ -1,5 +1,7 @@
 
-<h1>Classements Ecuries</h1>
+<h1>Classement Ecuries </h1>
+
+   <br/>
 
 <%# btn choix saison %>
   Choix saison |
@@ -31,22 +33,22 @@
                 <% if @divisionId = event.division_id %>
                   <% divGp = Division.find(event.division_id).numero %>
                   <% saisonEvent = Saison.find(event.saison_id).nom %>
+                  <% numGp = Event.find(event.id).numero %>
                   <% nomPays = Circuit.find(event.circuit_id).pays %>
                   <%= link_to "GP #{event.numero}"" - #{nomPays}", 
-                      classecuries_path(saisonId: @saisonId, divisionId: @divisionId, eventId: event.id), 
+                      classecuries_path(saisonId: @saisonId, divisionId: @divisionId, eventId: event.id, numGp: numGp), 
                       class:"btn btn-primary", :method => :post %> 
                 <% end %>
               <% end %>
             <% end %>
           <% end %>
       <% end %>
-  <hr/>
+  <hr/> 
 
+  <%# entete event %>
+  <%# @eventId %>
 
-
- 
- <% if (@eventId).blank? %>
- <% else %>
+ <% if (@eventId).present? %>
 
     <table width="600">
         <thead>
@@ -93,66 +95,56 @@
           </tr>
       </tbody>
     </table>
- <% end %>
+
     <hr/>
    
  <%#= tableau data classement %>
 
- <% if (@eventId).blank? %>
- <% else %>
-  <% eventNum = Event.find(@eventId).numero %>
+   <table class="table table-striped table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th style="text-align: center;">#</th>
+        <th>Pilote</th>
+        <th style="text-align: center;">total</th>
+      </tr>
+    </thead>
 
-      <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th style="text-align: center;">#</th>
-            <th>Ecurie</th>
-            <th style="text-align: center;">total</th>
-          </tr>
-        </thead>
-       <tbody>
-         
-             <% if @equipes.blank? %>
-             <% else %>
-               <tr>
-                <% @equipes.each_with_index do |equipe, i| %>
-                   <td style="text-align: center;">
-                    <strong>  
-                      <%= (i+1) %>
-                    </strong> 
-                   </td>
-                   <td>
-                      <div class="contenant">
-                        <% equipeId = equipe.id %>  
-                        <%= image_tag Equipe.find(equipeId).logo, style: "width: 200px; display: block", class: "img-fluid rounded" %>
-                          <div class="texte_centrer">
-                            <%= equipe.nom %>  
-                          </div>
-                      </div>
-                   </td>
+    <tbody>
+      <tr>
+        <% @resultatsFiltres.each_with_index do | res, i| %>
+          <td style="text-align: center;">
+              <strong>  
+                <%= (i+1) %>
+              </strong> 
+          </td>
+          <td>
+           <div class="contenant">
+              <% equipeId = res[0] %>  
+              <% nomEcurie = Equipe.find(res[0]).nom %> 
+              <%= image_tag Equipe.find(equipeId).logo, style: "width: 200px; display: block", class: "img-fluid rounded" %>
+                <div class="texte_centrer">
+                  <%= nomEcurie %> 
+                </div>
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <strong>
+              <%= number_with_precision(res[1], precision: 0) %>
+            </strong>
+          </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-                     <td style="text-align: center;">
-                      <% saisonId = Event.find(@eventId).saison_id %>
-                      <% divisionId = Event.find(@eventId).division_id %>
-              
-                      <strong>
-                        
-                          <% cumulScore = Resultat.joins(:event).where('numero <= :numero AND saison_id = :saison_id AND ecurie = :ecurie
-                          AND division_id = :division_id', 
-                            numero: eventNum, saison_id: saisonId, ecurie: equipe.id, division_id: divisionId).sum(:score)  %>
-                          <%= number_with_precision(cumulScore, precision: 0) %>
 
-                      </strong>
-                   </td>
-                  </tr>
-                <% end %>
-             <% end %>
-         
-       </tbody>
-      </table>
 
+ <br/> <hr/>
+      
   <%# PDF event actif %>
    
-  <%= link_to "PDF", classecuries_path(eventId: @eventId, format: :pdf), class:"btn btn-dark" %>
+  <%= link_to "PDF", classements_path(eventId: @eventId, format: :pdf), class:"btn btn-dark" %>
 
-  <% end %>
+   <% end %>
+
+
