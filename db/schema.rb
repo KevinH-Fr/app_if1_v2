@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -76,11 +79,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
     t.string "division"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "saison_id"
-    t.integer "division_id"
+    t.bigint "saison_id"
+    t.bigint "division_id"
     t.integer "numero"
-    t.integer "circuit_id"
-    t.index ["circuit_id"], name: "index_events_on_circuit_id"
     t.index ["division_id"], name: "index_events_on_division_id"
     t.index ["saison_id"], name: "index_events_on_saison_id"
   end
@@ -95,8 +96,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
     t.integer "recupere"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "event_id"
-    t.integer "pilote_id"
+    t.bigint "event_id"
+    t.bigint "pilote_id"
     t.index ["event_id"], name: "index_licences_on_event_id"
     t.index ["pilote_id"], name: "index_licences_on_pilote_id"
   end
@@ -108,7 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
     t.string "division"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "division_id"
+    t.bigint "division_id"
     t.index ["division_id"], name: "index_pilotes_on_division_id"
   end
 
@@ -125,8 +126,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
     t.integer "course"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "pilote_id"
-    t.integer "event_id"
+    t.bigint "pilote_id"
+    t.bigint "event_id"
     t.boolean "dotd"
     t.boolean "mt"
     t.decimal "score"
@@ -157,7 +158,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "events", "circuits"
   add_foreign_key "events", "divisions"
   add_foreign_key "events", "saisons"
   add_foreign_key "licences", "events"
