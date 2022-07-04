@@ -117,7 +117,7 @@
                 <%= (i+1) %>
               </strong> 
           </td>
-          <td>
+          <td style="text-align: center;">
            <div class="contenant">
               <% equipeId = res[0] %>  
               <% nomEcurie = Equipe.find(res[0]).nom %> 
@@ -143,7 +143,9 @@
       
   <%# PDF event actif %>
    
-  <%= link_to "PDF", classements_path(eventId: @eventId, format: :pdf), class:"btn btn-dark" %>
+  <% numGp = Event.find(@eventId).numero %>
+  <%= link_to "PDF",  classecuries_path(saisonId: @saisonId, divisionId: @divisionId, eventId: @eventId, numGp: numGp, format: :pdf), class:"btn btn-dark" %>
+
 
    <% end %>
 

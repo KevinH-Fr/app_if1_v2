@@ -14,6 +14,7 @@ gem 'tzinfo-data', '~> 1.2021', '>= 1.2021.5'
 gem "bootsnap", require: false
 gem 'devise', '~> 4.8', '>= 4.8.1'
 gem 'ransack'
+
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem "sassc-rails"
