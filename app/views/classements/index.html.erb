@@ -142,8 +142,9 @@
  <br/> <hr/>
       
   <%# PDF event actif %>
-   
-  <%= link_to "PDF", classements_path(eventId: @eventId, format: :pdf), class:"btn btn-dark" %>
+  <% numGp = Event.find(@eventId).numero %>
+  <%= link_to "PDF",  classements_path(saisonId: @saisonId, divisionId: @divisionId, eventId: @eventId, numGp: numGp, format: :pdf), class:"btn btn-dark" %>
+
 
    <% end %>
 
