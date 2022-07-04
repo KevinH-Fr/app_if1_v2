@@ -79,6 +79,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
     t.integer "saison_id"
     t.integer "division_id"
     t.integer "numero"
+    t.integer "circuit_id"
+    t.index ["circuit_id"], name: "index_events_on_circuit_id"
     t.index ["division_id"], name: "index_events_on_division_id"
     t.index ["saison_id"], name: "index_events_on_saison_id"
   end
@@ -155,6 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_110149) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "events", "circuits"
   add_foreign_key "events", "divisions"
   add_foreign_key "events", "saisons"
   add_foreign_key "licences", "events"

@@ -91,7 +91,9 @@
           </td>
 
             <td>
-                <%= Equipe.find(pilote.ecurie).nom %>
+                <% if pilote.ecurie.present?%>
+                     <%= Equipe.find(pilote.ecurie).nom %>
+                <% end %>
             </td>
           <td>
               <% divisionLiee = pilote.division_id %>
